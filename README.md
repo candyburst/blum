@@ -36,6 +36,46 @@
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `npm run start`  | Runs farming/claim, tasks, check-ins, games, claim invite points, etc.—everything the game offers, the tool will do                                  |
 
+### Installation Commands
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/candyburst/blum.git
+   ```
+
+2. **Navigate into the project directory:**
+   ```bash
+   cd blum
+   ```
+
+3. **Install the required dependencies:**
+   ```bash
+   npm install
+   ```
+
+   **Note:** If you encounter problems during `npm install`, try this command:
+   ```bash
+   npm install --ignore-scripts --no-bin-links
+   ```
+
+4. **Edit the `users.txt` file to add queries or user info:**
+   ```bash
+   nano src/data/users.txt
+   ```
+
+   Add the required information in the file.
+
+   - To exit nano, use the following key sequence:
+     - `Ctrl + X`
+     - `Y` (to confirm save)
+     - `Ctrl + M` (to return)
+     - `Enter`
+
+5. **Start the application:**
+   ```bash
+   npm run start
+   ```
+
 ## 🕹️ Features of the Tool
 
 - Automatic daily check-in
