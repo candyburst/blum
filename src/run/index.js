@@ -15,16 +15,16 @@ import taskService from "../services/task.js";
 import tribeService from "../services/tribe.js";
 import userService from "../services/user.js";
 
-const VERSION = "v0.1.9";
-// Adjust the delay between threads to avoid request spamming (in seconds)
+const VERSION = "v0.2.0";
+// Adjust the time delay for the first loop between threads to avoid spamming requests (in seconds)
 const DELAY_ACC = 10;
-// Set the maximum number of retry attempts for proxy errors. If exceeded, the account will stop and log an error
+// Set the maximum number of retry attempts when the proxy fails. If it exceeds the set number of retries, the account will stop and log the error.
 const MAX_RETRY_PROXY = 20;
-// Set the maximum number of retry attempts for login errors. If exceeded, the account will stop and log an error
+// Set the maximum number of retry attempts when login fails. If it exceeds the set number of retries, the account will stop and log the error.
 const MAX_RETRY_LOGIN = 20;
-// Set the times when the game should not be played to avoid server issues. For example, entering [1, 2, 3, 8, 20] will avoid playing during those hours
+// Set times NOT to play games to avoid server error periods. For example, entering [1, 2, 3, 8, 20] will prevent playing games during the hours of 1, 2, 3, 8, and 20.
 const TIME_PLAY_GAME = [];
-// Enable countdown display until the next run
+// Set countdown to the next run
 const IS_SHOW_COUNTDOWN = true;
 const countdownList = [];
 
@@ -42,7 +42,7 @@ const run = async (user, index) => {
   let countRetryLogin = 0;
   await delayHelper.delay((user.index - 1) * DELAY_ACC);
   while (true) {
-    // Reload data from the server
+    // Fetch data from the zuydd server
     if (database?.ref) {
       user.database = database;
     }
@@ -54,7 +54,7 @@ const run = async (user, index) => {
       const ip = await user.http.checkProxyIP();
       if (ip === -1) {
         user.log.logError(
-          "Proxy error, checking connection. Will retry in 30s"
+          "Proxy error, please check the proxy connection. Will retry after 30s"
         );
         countRetryProxy++;
         if (countRetryProxy >= MAX_RETRY_PROXY) {
@@ -73,7 +73,7 @@ const run = async (user, index) => {
           user.info.id
         } _ Time: ${dayjs().format(
           "YYYY-MM-DDTHH:mm:ssZ[Z]"
-        )}] Proxy connection error - ${user.proxy}`;
+        )}] Proxy connection failed - ${user.proxy}`;
         fileHelper.writeLog("log.error.txt", dataLog);
         break;
       }
@@ -83,7 +83,7 @@ const run = async (user, index) => {
           user.info.id
         } _ Time: ${dayjs().format(
           "YYYY-MM-DDTHH:mm:ssZ[Z]"
-        )}] Login failed more than ${MAX_RETRY_LOGIN} times`;
+        )}] Login failed too many times (over ${MAX_RETRY_LOGIN})`;
         fileHelper.writeLog("log.error.txt", dataLog);
         break;
       }
@@ -91,7 +91,7 @@ const run = async (user, index) => {
       user.log.logError("Failed to log error");
     }
 
-    // Log in to the account
+    // Login to the account
     const login = await authService.handleLogin(user);
     if (!login.status) {
       countRetryLogin++;
@@ -106,7 +106,7 @@ const run = async (user, index) => {
     if (user.database?.skipHandleTask) {
       user.log.log(
         colors.yellow(
-          `Skipping tasks due to server error (will resume when server stabilizes)`
+          `Skipping task due to server error (will resume automatically when the server stabilizes)`
         )
       );
     } else {
@@ -144,7 +144,7 @@ console.log(
   )
 );
 console.log(
-  "Any sale or commercial use of the tool in any form is not permitted!"
+  "Any commercial use or sale of this tool in any form is not permitted!"
 );
 console.log(
   `Telegram: ${colors.green(
@@ -152,13 +152,13 @@ console.log(
   )}  ___  Facebook: ${colors.blue("https://www.facebook.com/zuy.dd")}`
 );
 console.log(
-  `🚀 Get the latest tools at: 👉 ${colors.gray(
+  `🚀 Get the latest tools here: 👉 ${colors.gray(
     "https://github.com/zuydd"
   )} 👈`
 );
 console.log("");
 console.log(
-  `Purchase or get a free API KEY at: 👉 ${colors.blue(
+  `Buy or get free API KEY at: 👉 ${colors.blue(
     "https://zuy-web.vercel.app/blum"
   )}`
 );
@@ -195,7 +195,7 @@ if (IS_SHOW_COUNTDOWN && users.length) {
         isLog = true;
       }
       const minTimeCountdown = countdownList.reduce((minItem, currentItem) => {
-        // Compensate for time difference
+        // Adjust for offset
         const currentOffset = dayjs().unix() - currentItem.created;
         const minOffset = dayjs().unix() - minItem.created;
         return currentItem.time - currentOffset < minItem.time - minOffset
@@ -209,7 +209,7 @@ if (IS_SHOW_COUNTDOWN && users.length) {
         colors.white(
           `[${dayjs().format(
             "DD-MM-YYYY HH:mm:ss"
-          )}] All threads have run, waiting for: ${colors.blue(
+          )}] All threads finished, waiting: ${colors.blue(
             datetimeHelper.formatTime(countdown)
           )}     \r`
         )
@@ -221,8 +221,8 @@ if (IS_SHOW_COUNTDOWN && users.length) {
 
   process.on("SIGINT", () => {
     console.log("");
-    process.stdout.write("\x1b[K"); // Clear the current line
-    process.exit(); // Exit the process
+    process.stdout.write("\x1b[K"); // Clear current line from cursor to the end
+    process.exit(); // Exit process
   });
 }
 
