@@ -68,7 +68,18 @@
    ```bash
    npm run start
    ```
-   
+## How to update and apply changes incase you face any error:
+   **To update to the latest version:**
+   ```bash
+   git pull
+   ```
+
+   **If you encounter problems during `git pull`, try this command:**
+   ```bash
+   git stash && git pull
+   ```
+   **if you use git stash command then you need to edit the users.txt file that shown above in the step 4.
+
 ## 🕹️ Features of the Tool
 
 - Automatic daily check-in
