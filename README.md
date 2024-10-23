@@ -78,7 +78,7 @@
    ```bash
    git stash && git pull
    ```
-   **if you use git stash command then you need to edit the users.txt file that shown above in the step 4.
+   **if you use git stash command then you need to edit the users.txt file that shown above in the step 4.**
 
 ## 🕹️ Features of the Tool
 
