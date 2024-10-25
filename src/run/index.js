@@ -15,7 +15,7 @@ import taskService from "../services/task.js";
 import tribeService from "../services/tribe.js";
 import userService from "../services/user.js";
 
-const VERSION = "v0.2.0";
+const VERSION = "v0.2.1";
 // Adjust the time delay for the first loop between threads to avoid spamming requests (in seconds)
 const DELAY_ACC = 10;
 // Set the maximum number of retry attempts when the proxy fails. If it exceeds the set number of retries, the account will stop and log the error.
