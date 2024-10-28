@@ -76,9 +76,9 @@
 
    **If you encounter problems during `git pull`, try this command:**
    ```bash
-   git stash && git pull
+   mv src/data/users.txt src/data/user.txt && git stash && git pull && mv src/data/user.txt src/data/users.txt
    ```
-   **if you use git stash command then you need to edit the users.txt file that shown above in the step 4.**
+   **You need to enter the pro key in the bot screen. Make sure you have the backup of the key.**
 
 ## 🕹️ Features of the Tool
 
