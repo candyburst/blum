@@ -78,7 +78,7 @@
    ```bash
    mv src/data/users.txt src/data/user.txt && git stash && git pull && mv src/data/user.txt src/data/users.txt
    ```
-   **Important Note: You need to enter the pro key in the bot screen. Make sure you have the backup of the key.**
+   # Important Note: You need to enter the pro key in the bot screen. Make sure you have the backup of the key.
 
 ## 🕹️ Features of the Tool
 
