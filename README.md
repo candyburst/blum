@@ -111,7 +111,20 @@
 
 > When updating to a new version, simply copy the 📁 [data](src/data) folder from the old version to the new version and it will run without needing to re-enter the data.
 
-> Latest version: `v0.1.9`
+> Latest version: `v0.2.1`
+
+Here’s the translation:
+
+<details>
+<summary>v0.2.1 - 📅 10/23/2024</summary>
+  
+- Changed the amount of DOGS received each time a game is played.
+</details>
+<details>
+<summary>v0.2.0 - 📅 10/23/2024</summary>
+  
+- Fixed the issue where the game could not be skipped when there was no API KEY.
+</details>
 
 <details>
 <summary>v0.1.9 - 📅 23/10/2024</summary>
