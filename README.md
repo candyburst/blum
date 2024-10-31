@@ -121,9 +121,14 @@
 
 > When updating to a new version, simply copy the 📁 [data](src/data) folder from the old version to the new version and it will run without needing to re-enter the data.
 
-> Latest version: `v0.2.1`
+> Latest version: `v0.2.2`
 
-Here’s the translation:
+<details>
+<summary>v0.2.2 - 📅 10/30/2024</summary>
+  
+- Randomize server
+- Add language options
+</details>
 
 <details>
 <summary>v0.2.1 - 📅 10/23/2024</summary>
@@ -137,12 +142,12 @@ Here’s the translation:
 </details>
 
 <details>
-<summary>v0.1.9 - 📅 23/10/2024</summary>
+<summary>v0.1.9 - 📅 10/23/2024</summary>
   
 - Fix tool stopping bug
 </details>
 <details>
-<summary>v0.1.8 - 📅 23/10/2024</summary>
+<summary>v0.1.8 - 📅 10/23/2024</summary>
   
 - Added fake device feature
 - Added API KEY system for playing games
