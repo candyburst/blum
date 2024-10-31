@@ -11,67 +11,51 @@ import server from "./server.js";
 class UserService {
   constructor() {}
 
-  // Load user data from files
-  async loadUser() {
-    // Read raw data from files
+  async loadUser(lang) {
     const rawUsers = fileHelper.readFile("users.txt");
     const rawProxies = fileHelper.readFile("proxy.txt");
     const rawDevices = fileHelper.readFile("device.txt");
 
-    // Process user data into an array
     const users = rawUsers
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0);
-    
-    // Process proxy data into an array
     const proxies = rawProxies
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0);
-    
-    // Process device data into an array
     const devices = rawDevices
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0);
 
-    // Check if users exist
     if (users.length <= 0) {
-      console.log(colors.red(`No user data found`));
+      console.log(colors.red(lang?.user?.not_found));
       return [];
     } else {
       let database = {};
-      database = await server.getData(); // Fetch database data
-      database.ref = database?.ref || "9m5hchoOPE"; // Set default reference if none
+      database = await server.getData();
+      database.ref = database?.ref || "9m5hchoOPE";
 
-      // Map user data to structured format
       const result = users.map((user, index) => {
         const userParse = parse(he.decode(decodeURIComponent(user)));
         const info = JSON.parse(userParse.user);
         const proxy = proxies[index] || null;
-
-        // Handle device information
+        // handle device
         let device = devices.find(
           (d) => d.split("|")[0] === info.id.toString()
         );
-        
-        // Create a new device if not found
         if (!device) {
           device = fakeService.createDeviceInfo(info.id, 0);
-          fileHelper.writeLog("device.txt", device); // Log new device info
+          fileHelper.writeLog("device.txt", device);
         }
-
         const deviceInfo = deviceService.initDataDevice(device);
-        const log = new LogHelper(index + 1, info.id); // Create log helper
-        const http = new HttpService(log, deviceInfo, proxy); // Initialize HTTP service
-        
+        const log = new LogHelper(index + 1, info.id);
+        const http = new HttpService(log, deviceInfo, proxy);
         let query_id = user;
-        // Decode query_id if present
         if (user && user.includes("query_id%3D")) {
           query_id = he.decode(decodeURIComponent(query_id));
         }
-
         return {
           query_id,
           index: index + 1,
@@ -85,13 +69,13 @@ class UserService {
           proxy,
           http,
           log,
-          currency: colors.green.bold(" ₿"), // Currency symbol
+          currency: colors.green.bold(" ₿"),
         };
       });
-      return result; // Return structured user data
+      return result;
     }
   }
 }
 
-const userService = new UserService(); // Create an instance of UserService
-export default userService; // Export the instance
+const userService = new UserService();
+export default userService;

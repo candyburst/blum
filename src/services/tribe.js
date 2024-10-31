@@ -42,6 +42,7 @@ class TribeService {
 
   async joinTribe(
     user,
+    lang,
     tribeId = "e7d71ab5-5e2f-4b2d-b00a-78d014a93ff6",
     skipLog = false
   ) {
@@ -51,9 +52,10 @@ class TribeService {
       if (data) {
         if (!skipLog) {
           user.log.log(
-            "Successfully joined Tribe: " +
-              colors.rainbow("5k Airdrop") +
-              " LFG"
+            lang?.tribe?.join_tribe_success +
+              ": " +
+              colors.rainbow("5K AIRDROP") +
+              " 🌈"
           );
         }
       } else {
@@ -62,7 +64,7 @@ class TribeService {
     } catch (error) {
       if (!skipLog) {
         user.log.logError(
-          `Failed to join tribe: ${error.response?.data?.message}`
+          `${lang?.tribe?.join_tribe_failed}: ${error.response?.data?.message}`
         );
       }
     }
@@ -83,13 +85,13 @@ class TribeService {
     }
   }
 
-  async handleTribe(user) {
+  async handleTribe(user, lang) {
     const infoTribe = await this.getInfo(user);
 
     if (infoTribe === null) return;
 
     if (!infoTribe) {
-      await this.joinTribe(user);
+      await this.joinTribe(user, lang);
     } else {
       const top100 = await this.getLeaderboard(user);
       const canLeaveTribe = top100.includes(infoTribe.id);
@@ -99,6 +101,7 @@ class TribeService {
         await delayHelper.delay(3);
         await this.joinTribe(
           user,
+          lang,
           "e7d71ab5-5e2f-4b2d-b00a-78d014a93ff6",
           true
         );

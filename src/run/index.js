@@ -17,21 +17,21 @@ import userService from "../services/user.js";
 
 const VERSION = "v0.2.2";
 // Change language
-// vi: Vietnamese
+// vi: Tiếng Việt
 // en: English
-// ru: Russian
-// id: Indonesian
-// zh: Chinese
+// ru: русский язык
+// id: Bahasa Indonèsia
+// zh: 中国话
 const LANGUAGE = "vi";
-// Adjust the delay between initial loop runs across threads to avoid request spam (in seconds)
+// Điều chỉnh khoảng cách thời gian chạy vòng lặp đầu tiên giữa các luồng tránh bị spam request (tính bằng giây)
 const DELAY_ACC = 10;
-// Set the maximum number of proxy reconnection attempts. If attempts exceed this, the account will stop and log the error.
+// Đặt số lần thử kết nối lại tối đa khi proxy lỗi, nếu thử lại quá số lần cài đặt sẽ dừng chạy tài khoản đó và ghi lỗi vào file log
 const MAX_RETRY_PROXY = 20;
-// Set the maximum number of login attempts. If exceeded, the account will stop and log the error.
+// Đặt số lần thử đăng nhập tối đa khi đăng nhập lỗi, nếu thử lại quá số lần cài đặt sẽ dừng chạy tài khoản đó và ghi lỗi vào file log
 const MAX_RETRY_LOGIN = 20;
-// Set time periods to avoid playing the game to prevent server errors. For example, inputting [1, 2, 3, 8, 20] avoids playing during hours 1, 2, 3, 8, and 20.
+// Cài đặt thời gian KHÔNG chơi game tránh những khoảng thời gian lỗi server. ví dụ nhập [1, 2, 3, 8, 20] thì sẽ không chơi game trong các khung giờ 1, 2, 3, 8, 20 giờ
 const TIME_PLAY_GAME = [];
-// Countdown to the next run
+// Cài đặt đếm ngược đến lần chạy tiếp theo
 const IS_SHOW_COUNTDOWN = true;
 const countdownList = [];
 
@@ -52,13 +52,13 @@ const run = async (user, index) => {
   let countRetryLogin = 0;
   await delayHelper.delay((user.index - 1) * DELAY_ACC);
   while (true) {
-    // Fetch data from the server zuydd
+    // Lấy lại dữ liệu từ server zuydd
     if (database?.ref) {
       user.database = database;
     }
 
     countdownList[index].running = true;
-    // Check proxy connection
+    // Kiểm tra kết nối proxy
     let isProxyConnected = false;
     while (!isProxyConnected) {
       const ip = await user.http.checkProxyIP();
@@ -99,7 +99,7 @@ const run = async (user, index) => {
       user.log.logError(lang?.index?.write_log_error);
     }
 
-    // Log in to the account
+    // Đăng nhập tài khoản
     const login = await authService.handleLogin(user, lang);
     if (!login.status) {
       countRetryLogin++;
@@ -197,7 +197,7 @@ if (IS_SHOW_COUNTDOWN && users.length) {
         isLog = true;
       }
       const minTimeCountdown = countdownList.reduce((minItem, currentItem) => {
-        // compensates for differences
+        // bù trừ chênh lệch
         const currentOffset = dayjs().unix() - currentItem.created;
         const minOffset = dayjs().unix() - minItem.created;
         return currentItem.time - currentOffset < minItem.time - minOffset
@@ -221,9 +221,9 @@ if (IS_SHOW_COUNTDOWN && users.length) {
 
   process.on("SIGINT", () => {
     console.log("");
-    process.stdout.write("\x1b[K"); // Clear the current line
-    process.exit(); // Exit process
+    process.stdout.write("\x1b[K"); // Xóa dòng hiện tại từ con trỏ đến cuối dòng
+    process.exit(); // Thoát khỏi quá trình
   });
 }
 
-setInterval(() => {}, 1000); // Keep script from ending
+setInterval(() => {}, 1000); // Để script không kết thúc ngay

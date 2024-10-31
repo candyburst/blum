@@ -2,11 +2,11 @@ class TokenHelper {
   constructor() {}
 
   isExpired(token) {
-    // Extract payload from the JWT token
-    const base64Url = token.split(".")[1]; // The payload is in the middle part
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/"); // Replace characters to conform to base64 format
+    // Tách payload từ JWT token
+    const base64Url = token.split(".")[1]; // Phần payload nằm ở phần giữa
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/"); // Thay đổi ký tự để đúng chuẩn base64
 
-    // Decode base64 to a JSON string
+    // Giải mã base64 thành chuỗi JSON
     const jsonPayload = decodeURIComponent(
       atob(base64)
         .split("")
@@ -16,14 +16,14 @@ class TokenHelper {
         .join("")
     );
 
-    // Convert JSON string to a JavaScript object
+    // Chuyển chuỗi JSON thành đối tượng JavaScript
     const payload = JSON.parse(jsonPayload);
 
-    // Get the exp information from the payload
+    // Lấy thông tin exp từ payload
     const exp = payload.exp;
-    // Get the current time in seconds
+    // Lấy thời gian hiện tại tính bằng giây
     const currentTime = Math.floor(Date.now() / 1000);
-    // Compare the expiration time with the current time
+    // So sánh thời gian hết hạn với thời gian hiện tại
     return exp < currentTime;
   }
 }

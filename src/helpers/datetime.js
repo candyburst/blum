@@ -14,11 +14,11 @@ class DatetimeHelper {
     let result = "";
 
     if (hours > 0) {
-      result += `${hours} hours `;
+      result += `${hours} giờ `;
     }
 
     if (minutes > 0 || hours > 0) {
-      result += `${minutes} minutes `;
+      result += `${minutes} phút `;
     }
 
     result += `${secs}s`;
@@ -28,23 +28,23 @@ class DatetimeHelper {
 
   formatTime(seconds) {
     const isNegative = seconds < 0;
-    seconds = Math.abs(seconds); // Get the absolute value of seconds
+    seconds = Math.abs(seconds); // Lấy giá trị tuyệt đối của seconds
 
-    const hours = Math.floor(seconds / 3600); // Calculate hours
-    const minutes = Math.floor((seconds % 3600) / 60); // Calculate minutes
-    const remainingSeconds = seconds % 60; // Calculate remaining seconds
+    const hours = Math.floor(seconds / 3600); // Tính số giờ
+    const minutes = Math.floor((seconds % 3600) / 60); // Tính số phút
+    const remainingSeconds = seconds % 60; // Tính số giây còn lại
 
     let result = "";
 
     if (hours > 0) {
-      result += `${hours} hours, `;
+      result += `${hours} giờ, `;
     }
 
     if (minutes > 0 || hours > 0) {
-      result += `${minutes} minutes, `;
+      result += `${minutes} phút, `;
     }
 
-    result += `${remainingSeconds}s`; // Always display seconds
+    result += `${remainingSeconds}s`; // Luôn luôn hiển thị giây
 
     return isNegative ? `-${result.trim()}` : result.trim();
   }

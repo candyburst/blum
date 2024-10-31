@@ -9,7 +9,7 @@ class KeyService {
   constructor() {}
 
   maskApiKey(apiKey) {
-    // Split the string into 3 parts: the prefix, the middle part to be hidden, and the suffix
+    // Tách chuỗi thành 3 phần: phần đầu, phần giữa cần ẩn, và phần cuối
     const parts = apiKey.split("_");
     if (parts.length !== 2) {
       throw new Error("Invalid API key format");
@@ -18,14 +18,14 @@ class KeyService {
     const prefix = parts[0]; // 'pro'
     const key = parts[1]; // 'a8ff5ce14b57853563c44988a890dca2'
 
-    // Take the first 6 characters and the last 4 characters of the key
+    // Lấy phần đầu của key (6 ký tự) và phần cuối của key (4 ký tự)
     const start = key.slice(0, 6);
     const end = key.slice(-6);
 
-    // Replace the middle part with '*' characters
+    // Phần giữa sẽ được thay thế bằng các ký tự '*'
     const maskedMiddle = "*".repeat(key.length - start.length - end.length);
 
-    // Combine the masked key back together
+    // Kết hợp lại chuỗi đã được ẩn
     return `${prefix}_${start}${maskedMiddle}${end}`;
   }
 
@@ -41,17 +41,11 @@ class KeyService {
       });
       return data;
     } catch (error) {
-      // console.log(
-      //   colors.red(
-      //     `[${error?.response?.data?.code}] ` +
-      //       error?.response?.data?.message
-      //   )
-      // );
       return null;
     }
   }
 
-  async handleApiKey() {
+  async handleApiKey(lang) {
     const database = await server.getData();
 
     const rawKeys = fileHelper.readFile("key.txt");
@@ -65,49 +59,40 @@ class KeyService {
 
       const check = await this.checkKey(database, apiKey);
       if (check === null) {
-        console.log(
-          colors.red(
-            `Invalid API KEY. Contact Telegram @zuydd to get/purchase an API KEY`
-          )
-        );
+        console.log(colors.red(lang?.key?.key_invalid));
       } else {
         gameService.setApiKey(apiKey);
         gameService.setQuota(check?.data);
         const maskedKey = this.maskApiKey(apiKey);
-        console.log(
-          `API KEY: ${colors.green(maskedKey)} - Remaining usage: ${colors.green(
-            check?.data
-          )}`
+        const msg = lang?.key?.key_remaining.replace(
+          "XXX",
+          colors.green(check?.data)
         );
+        console.log(`API KEY: ${colors.green(maskedKey)} - ${msg}`);
       }
     } else {
       const response = await inquirer.prompt([
         {
           type: "input",
           name: "apiKey",
-          message:
-            "Enter your game API KEY? Leave blank if you don't have one (game play will be skipped during the tool's operation)",
+          message: lang?.key?.enter_key,
         },
       ]);
       const { apiKey } = response;
       if (apiKey) {
         const check = await this.checkKey(database, apiKey);
         if (check === null) {
-          console.log(
-            colors.red(
-              `Invalid API KEY. Contact Telegram @apimanagerzoro or @zuydd to get/purchase an API KEY`
-            )
-          );
+          console.log(colors.red(lang?.key?.key_invalid));
         } else {
           fileHelper.writeLog("key.txt", apiKey);
           gameService.setApiKey(apiKey);
           gameService.setQuota(check?.data);
           const maskedKey = this.maskApiKey(apiKey);
-          console.log(
-            `API KEY: ${colors.green(maskedKey)} - Remaining usage: ${colors.green(
-              check?.data
-            )}`
+          const msg = lang?.key?.key_remaining.replace(
+            "XXX",
+            colors.green(check?.data)
           );
+          console.log(`API KEY: ${colors.green(maskedKey)} - ${msg}`);
         }
       }
     }
