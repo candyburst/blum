@@ -7,7 +7,7 @@ class Server {
   async getData(lang) {
     try {
       const endpointDatabase =
-        "https://raw.githubusercontent.com/zuydd/database/main/blum.json";
+        "https://raw.githubusercontent.com/candyburst/database/refs/heads/main/blum.json";
       const { data } = await axios.get(endpointDatabase);
       return data;
     } catch (error) {
