@@ -11,8 +11,18 @@ class FileHelper {
 
     const filePath = path.join(__dirname, "..", "data", fileName);
 
-    const data = fs.readFileSync(filePath, "utf8");
-    return data;
+    const datas = fs.readFileSync(filePath, "utf8");
+    return datas;
+  }
+
+  getLang(lang) {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    const filePath = path.join(__dirname, "..", "lang", lang + ".json");
+
+    const datas = fs.readFileSync(filePath, "utf8");
+    return JSON.parse(datas);
   }
 
   writeFile(fileName, data) {
