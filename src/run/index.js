@@ -15,18 +15,28 @@ import taskService from "../services/task.js";
 import tribeService from "../services/tribe.js";
 import userService from "../services/user.js";
 
-const VERSION = "v0.2.1";
-// Adjust the time delay for the first loop between threads to avoid spamming requests (in seconds)
+const VERSION = "v0.2.2";
+// Change language
+// vi: Vietnamese
+// en: English
+// ru: Russian
+// id: Indonesian
+// zh: Chinese
+const LANGUAGE = "vi";
+// Adjust the delay between initial loop runs across threads to avoid request spam (in seconds)
 const DELAY_ACC = 10;
-// Set the maximum number of retry attempts when the proxy fails. If it exceeds the set number of retries, the account will stop and log the error.
+// Set the maximum number of proxy reconnection attempts. If attempts exceed this, the account will stop and log the error.
 const MAX_RETRY_PROXY = 20;
-// Set the maximum number of retry attempts when login fails. If it exceeds the set number of retries, the account will stop and log the error.
+// Set the maximum number of login attempts. If exceeded, the account will stop and log the error.
 const MAX_RETRY_LOGIN = 20;
-// Set times NOT to play games to avoid server error periods. For example, entering [1, 2, 3, 8, 20] will prevent playing games during the hours of 1, 2, 3, 8, and 20.
+// Set time periods to avoid playing the game to prevent server errors. For example, inputting [1, 2, 3, 8, 20] avoids playing during hours 1, 2, 3, 8, and 20.
 const TIME_PLAY_GAME = [];
-// Set countdown to the next run
+// Countdown to the next run
 const IS_SHOW_COUNTDOWN = true;
 const countdownList = [];
+
+const lang = fileHelper.getLang(LANGUAGE);
+// console.log(lang);
 
 let database = {};
 setInterval(async () => {
@@ -42,7 +52,7 @@ const run = async (user, index) => {
   let countRetryLogin = 0;
   await delayHelper.delay((user.index - 1) * DELAY_ACC);
   while (true) {
-    // Fetch data from the zuydd server
+    // Fetch data from the server zuydd
     if (database?.ref) {
       user.database = database;
     }
@@ -53,9 +63,7 @@ const run = async (user, index) => {
     while (!isProxyConnected) {
       const ip = await user.http.checkProxyIP();
       if (ip === -1) {
-        user.log.logError(
-          "Proxy error, please check the proxy connection. Will retry after 30s"
-        );
+        user.log.logError(lang?.index?.error_proxy);
         countRetryProxy++;
         if (countRetryProxy >= MAX_RETRY_PROXY) {
           break;
@@ -71,9 +79,9 @@ const run = async (user, index) => {
       if (countRetryProxy >= MAX_RETRY_PROXY) {
         const dataLog = `[No ${user.index} _ ID: ${
           user.info.id
-        } _ Time: ${dayjs().format(
-          "YYYY-MM-DDTHH:mm:ssZ[Z]"
-        )}] Proxy connection failed - ${user.proxy}`;
+        } _ Time: ${dayjs().format("YYYY-MM-DDTHH:mm:ssZ[Z]")}] ${
+          lang?.index?.error_proxy_log
+        } - ${user.proxy}`;
         fileHelper.writeLog("log.error.txt", dataLog);
         break;
       }
@@ -81,18 +89,18 @@ const run = async (user, index) => {
       if (countRetryLogin >= MAX_RETRY_LOGIN) {
         const dataLog = `[No ${user.index} _ ID: ${
           user.info.id
-        } _ Time: ${dayjs().format(
-          "YYYY-MM-DDTHH:mm:ssZ[Z]"
-        )}] Login failed too many times (over ${MAX_RETRY_LOGIN})`;
+        } _ Time: ${dayjs().format("YYYY-MM-DDTHH:mm:ssZ[Z]")}] ${
+          lang?.index?.error_login_log
+        } ${MAX_RETRY_LOGIN} ${lang?.index?.times}`;
         fileHelper.writeLog("log.error.txt", dataLog);
         break;
       }
     } catch (error) {
-      user.log.logError("Failed to log error");
+      user.log.logError(lang?.index?.write_log_error);
     }
 
-    // Login to the account
-    const login = await authService.handleLogin(user);
+    // Log in to the account
+    const login = await authService.handleLogin(user, lang);
     if (!login.status) {
       countRetryLogin++;
       await delayHelper.delay(60);
@@ -101,27 +109,25 @@ const run = async (user, index) => {
       countRetryLogin = 0;
     }
 
-    await dailyService.checkin(user);
-    await tribeService.handleTribe(user);
+    await dailyService.checkin(user, lang);
+    await tribeService.handleTribe(user, lang);
     if (user.database?.skipHandleTask) {
-      user.log.log(
-        colors.yellow(
-          `Skipping task due to server error (will resume automatically when the server stabilizes)`
-        )
-      );
+      user.log.log(colors.yellow(lang?.index?.skip_task_message));
     } else {
-      await taskService.handleTask(user);
+      await taskService.handleTask(user, lang);
     }
 
-    await inviteClass.handleInvite(user);
+    await inviteClass.handleInvite(user, lang);
     let awaitTime = await farmingClass.handleFarming(
       user,
+      lang,
       login.profile?.farming
     );
     countdownList[index].time = (awaitTime + 1) * 60;
     countdownList[index].created = dayjs().unix();
     const minutesUntilNextGameStart = await gameService.handleGame(
       user,
+      lang,
       login.profile?.playPasses,
       TIME_PLAY_GAME
     );
@@ -139,38 +145,34 @@ const run = async (user, index) => {
 };
 
 console.log(
-  colors.yellow.bold(
-    `=============  Tool developed and shared for free by ZuyDD  =============`
-  )
+  colors.yellow.bold(`=============  ${lang?.index?.copyright}  =============`)
 );
-console.log(
-  "Any commercial use or sale of this tool in any form is not permitted!"
-);
+console.log(lang?.index?.copyright2);
 console.log(
   `Telegram: ${colors.green(
     "https://t.me/zuydd"
   )}  ___  Facebook: ${colors.blue("https://www.facebook.com/zuy.dd")}`
 );
 console.log(
-  `🚀 Get the latest tools here: 👉 ${colors.gray(
+  `🚀 ${lang?.index?.update_guide} 👉 ${colors.gray(
     "https://github.com/zuydd"
   )} 👈`
 );
 console.log("");
 console.log(
-  `Buy or get free API KEY at: 👉 ${colors.blue(
+  `${lang?.index?.buy_key_info} 👉 ${colors.blue(
     "https://zuy-web.vercel.app/blum"
   )}`
 );
 console.log("");
 console.log("");
 
-await server.checkVersion(VERSION);
-await server.showNoti();
+await server.checkVersion(VERSION, lang);
+await server.showNoti(lang);
 console.log("");
-const users = await userService.loadUser();
+const users = await userService.loadUser(lang);
 
-await keyService.handleApiKey();
+await keyService.handleApiKey(lang);
 
 for (const [index, user] of users.entries()) {
   countdownList.push({
@@ -195,7 +197,7 @@ if (IS_SHOW_COUNTDOWN && users.length) {
         isLog = true;
       }
       const minTimeCountdown = countdownList.reduce((minItem, currentItem) => {
-        // Adjust for offset
+        // compensates for differences
         const currentOffset = dayjs().unix() - currentItem.created;
         const minOffset = dayjs().unix() - minItem.created;
         return currentItem.time - currentOffset < minItem.time - minOffset
@@ -207,11 +209,9 @@ if (IS_SHOW_COUNTDOWN && users.length) {
       process.stdout.write("\x1b[K");
       process.stdout.write(
         colors.white(
-          `[${dayjs().format(
-            "DD-MM-YYYY HH:mm:ss"
-          )}] All threads finished, waiting: ${colors.blue(
-            datetimeHelper.formatTime(countdown)
-          )}     \r`
+          `[${dayjs().format("DD-MM-YYYY HH:mm:ss")}] ${
+            lang?.index?.countdown_message
+          } ${colors.blue(datetimeHelper.formatTime(countdown))}     \r`
         )
       );
     } else {
@@ -221,9 +221,9 @@ if (IS_SHOW_COUNTDOWN && users.length) {
 
   process.on("SIGINT", () => {
     console.log("");
-    process.stdout.write("\x1b[K"); // Clear current line from cursor to the end
+    process.stdout.write("\x1b[K"); // Clear the current line
     process.exit(); // Exit process
   });
 }
 
-setInterval(() => {}, 1000); // Keep the script running
+setInterval(() => {}, 1000); // Keep script from ending
