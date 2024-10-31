@@ -97,6 +97,16 @@
 > - Login, task, or game errors are due to Blum's server issues, not tool errors. Just let it be, and the tool will resume once the server is fixed.
 > - The server often experiences errors between 2 PM - 12 AM, so it's recommended to run the tool for the first time between 4 AM - 12 PM for smoother performance.
 
+## 🌐 Language Settings
+
+- To change the tool's language, locate the variable `LANGUAGE = "vi"` in the [index.js](src/run/index.js) file and update it with the appropriate language code.
+- Supported languages:
+  - `vi`: Vietnamese
+  - `en`: English
+  - `ru`: Russian
+  - `id`: Indonesian
+  - `zh`: Chinese
+
 ## ♾ Multi-Thread Setup
 
 - The tool will automatically run in multi-thread mode according to the number of accounts entered; no additional setup is required.
