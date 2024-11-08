@@ -51,7 +51,7 @@ class GameService {
     let points = generatorHelper.randomInt(180, 200);
     let dogs = 0;
     if (eligibleDogs) {
-      points = generatorHelper.randomInt(150, 180);
+      points = generatorHelper.randomInt(70, 140);
       dogs = generatorHelper.randomInt(7, 14) * 0.1;
     }
     const payload = await this.createPlayload(user, lang, gameId, points, dogs);
