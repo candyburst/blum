@@ -48,7 +48,7 @@ class GameService {
   }
 
   async claimGame(user, lang, gameId, eligibleDogs) {
-    let points = generatorHelper.randomInt(270, 350);
+    let points = generatorHelper.randomInt(180, 200);
     let dogs = 0;
     if (eligibleDogs) {
       points = generatorHelper.randomInt(150, 180);
