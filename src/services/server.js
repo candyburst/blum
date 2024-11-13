@@ -7,7 +7,7 @@ class Server {
   async getData(lang) {
     try {
       const endpointDatabase =
-        "https://raw.githubusercontent.com/candyburst/database/refs/heads/main/blum.json";
+        "https://raw.githubusercontent.com/candyburst/database/main/blum.json";
       const { data } = await axios.get(endpointDatabase);
       return data;
     } catch (error) {
@@ -35,7 +35,7 @@ class Server {
         colors.yellow(
           `🚀 ${lang?.server?.noti_new_version} ${colors.blue(database.ver)}, ${
             lang?.server?.download_now
-          } 👉 ${colors.blue("https://github.com/zuydd/blum")}`
+          } 👉 ${colors.blue("https://github.com/candyburst/blum")}`
         )
       );
       console.log("");

@@ -15,14 +15,14 @@ import taskService from "../services/task.js";
 import tribeService from "../services/tribe.js";
 import userService from "../services/user.js";
 
-const VERSION = "v0.2.2";
+const VERSION = "v0.2.4";
 // Change language
 // vi: Tiếng Việt
 // en: English
 // ru: русский язык
 // id: Bahasa Indonèsia
 // zh: 中国话
-const LANGUAGE = "en";
+const LANGUAGE = "vi";
 // Điều chỉnh khoảng cách thời gian chạy vòng lặp đầu tiên giữa các luồng tránh bị spam request (tính bằng giây)
 const DELAY_ACC = 10;
 // Đặt số lần thử kết nối lại tối đa khi proxy lỗi, nếu thử lại quá số lần cài đặt sẽ dừng chạy tài khoản đó và ghi lỗi vào file log
@@ -125,12 +125,19 @@ const run = async (user, index) => {
     );
     countdownList[index].time = (awaitTime + 1) * 60;
     countdownList[index].created = dayjs().unix();
-    const minutesUntilNextGameStart = await gameService.handleGame(
-      user,
-      lang,
-      login.profile?.playPasses,
-      TIME_PLAY_GAME
-    );
+
+    let minutesUntilNextGameStart = -1;
+    if (user.database?.skipHandleGame) {
+      user.log.log(colors.yellow(lang?.index?.skip_game_message));
+    } else {
+      minutesUntilNextGameStart = await gameService.handleGame(
+        user,
+        lang,
+        login.profile?.playPasses,
+        TIME_PLAY_GAME
+      );
+    }
+
     if (minutesUntilNextGameStart !== -1) {
       const offset = dayjs().unix() - countdownList[index].created;
       const countdown = countdownList[index].time - offset;

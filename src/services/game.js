@@ -48,10 +48,11 @@ class GameService {
   }
 
   async claimGame(user, lang, gameId, eligibleDogs) {
-    let points = generatorHelper.randomInt(180, 200);
+    const randomPoints = user?.database?.randomPoints || [180, 230];
+    let points = generatorHelper.randomInt(randomPoints[0], randomPoints[1]);
     let dogs = 0;
     if (eligibleDogs) {
-      points = generatorHelper.randomInt(70, 140);
+      points = generatorHelper.randomInt(150, 180);
       dogs = generatorHelper.randomInt(7, 14) * 0.1;
     }
     const payload = await this.createPlayload(user, lang, gameId, points, dogs);
@@ -104,6 +105,7 @@ class GameService {
         if (servers.length) {
           const randomServer = generatorHelper.randomInt(0, servers.length - 1);
           server = servers[randomServer].url;
+          // server = "http://localhost:3000/api/";
         } else {
           return null;
         }
@@ -213,7 +215,7 @@ class GameService {
       let gameCount = playPasses || 0;
       let errorCount = 0;
       while (gameCount > 0) {
-        if (errorCount > 20) {
+        if (errorCount > 3) {
           gameCount = 0;
           continue;
         }
@@ -244,6 +246,9 @@ class GameService {
             gameId,
             eligibleDogs
           );
+          if (!statusClaim) {
+            errorCount++;
+          }
           if (statusClaim) gameCount--;
         } else {
           errorCount++;
