@@ -80,6 +80,18 @@
    ```
    # Important Note: You need to enter the pro key in the bot screen. Make sure you have the backup of the key.
 
+## 🔄 Guide to Upgrade to the Latest Version When Facing Library Issues
+
+- **Step 1:** Download the latest version [here ⬇️](https://github.com/zuydd/blum/archive/refs/heads/main.zip)  
+- **Step 2:** In the old tool directory, copy the [data](src/data) folder to another location to preserve the data (to avoid re-importing/re-creating).  
+- **Step 3:** Extract the downloaded file.  
+- **Step 4:** In the new tool directory (from the extracted file), copy the [src](src) folder and paste it over the `src` folder in the old tool directory (this updates the code).  
+- **Step 5:** Copy back the `data` folder (from Step 2) and paste it over the `data` folder in the old tool directory.  
+
+At this point, the old tool has been updated to the latest version and can be used as usual.
+
+Video tutorial: https://youtu.be/nwyrdEVxvPQ
+
 ## 🕹️ Features of the Tool
 
 - Automatic daily check-in
