@@ -48,7 +48,7 @@ class GameService {
   }
 
   async claimGame(user, lang, gameId, eligibleDogs) {
-    const randomPoints = user?.database?.randomPoints || [210, 270];
+    const randomPoints = user?.database?.randomPoints || [175, 225];
     const multiplierPoint = user?.database?.multiplierPoint || 1;
     let points = generatorHelper.randomInt(randomPoints[0], randomPoints[1]);
     let dogs = 0;
