@@ -16,7 +16,7 @@ class UserService {
       try {
         return decodeURIComponent(match);
       } catch (e) {
-        return match; // Nếu có lỗi, giữ nguyên phần này
+        return match;
       }
     });
   }
